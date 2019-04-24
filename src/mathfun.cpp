@@ -558,8 +558,11 @@ long long   factor(int n)
     return ret;
 }
 
+// index of symmetric matrix element
+int     idx_sym(int i, int j)
+{ return i>j ? i*(i+1)/2 + j : j*(j+1)/2 + i; }
 
-
-
-
+// index of repulsion matrix
+int     idx(int i, int j, int k, int l)
+{ return idx_sym(idx_sym(i,j), idx_sym(k,l)); }
 

@@ -192,3 +192,78 @@ double  int_repulsion(const Phi &a, const Phi &b,
                                             c.gauss[k], d.gauss[l]);
     return ret;
 }
+
+// ==================== Basis ====================
+
+Basis::Basis(void)
+{
+    nPhi    = 0;
+    phi     = nullptr;
+}
+
+Basis::Basis(int)
+{
+    // TODO
+}
+
+Basis::~Basis(void)
+{
+    delete [] phi;
+    phi = nullptr;
+}
+
+// friend function to calculate integral matrix;
+Mat  Mat_int_overlap(const Basis &bas)      // nPhi * nPhi
+{
+    Mat ret(bas.nPhi, bas.nPhi);
+    for (int i=0; i<bas.nPhi; i++)
+        for (int j=i; j<bas.nPhi; j++)
+            ret(i,j) = ret(j,i) = int_overlap(bas.phi[i], bas.phi[j]);
+
+    return  ret;
+}
+
+Mat  Mat_int_kinetic(const Basis &bas)      // nPhi * nPhi
+{
+    Mat ret(bas.nPhi, bas.nPhi);
+    for (int i=0; i<bas.nPhi; i++)
+        for (int j=i; j<bas.nPhi; j++)
+            ret(i,j) = ret(j,i) = int_kinetic(bas.phi[i], bas.phi[j]);
+
+    return  ret;
+}
+
+Mat  Mat_int_nuclear(const Basis &bas,      // nPhi * nPhi
+                     const Molecule &mol)
+{
+    Mat ret(bas.nPhi, bas.nPhi, 0.0);
+    for (int m=0; m<mol.nAtom; m++)
+        for (int i=0; i<bas.nPhi; i++)
+            for (int j=i; j<bas.nPhi; j++) {
+                double integral = int_nuclear(bas.phi[i], bas.phi[j], mol.geom[m])
+                                  * mol.zvals[m];
+                ret(i,j) += integral;
+                ret(j,i) += integral;
+            }
+
+    return ret;
+}
+
+Mat  Mat_int_repulsion(const Basis &bas)       // 1 * idx(idx(nPhi), idx(nPhi))
+{
+    int MatSize = idx(bas.nPhi, bas.nPhi, bas.nPhi, bas.nPhi);
+    Mat ret(MatSize, 1);
+
+    for (int i=0; i<bas.nPhi; i++)
+        for (int j=i; j<bas.nPhi; j++)
+            for (int k=0; k<bas.nPhi; k++)
+                for (int l=k; l<bas.nPhi; l++) {
+                    if (idx_sym(i,j) < idx_sym(k,l))
+                        continue;
+                    ret(idx(i,j,k,l), 0) = int_repulsion(bas.phi[i], bas.phi[j],
+                                                         bas.phi[k], bas.phi[l]);
+                }
+
+    return ret;
+}
+

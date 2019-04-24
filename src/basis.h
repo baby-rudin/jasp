@@ -9,7 +9,10 @@ class Phi;      // 3d Math function
 class Basis;
 
 // orbit type flag
-enum OrbitType {S, Px, Py, Pz};
+enum OrbitType {_S	= "S",
+		_Px	= "Px",
+		_Py	= "Py",
+		_Pz	= "Py" };
 
 class Gauss
 {
@@ -21,9 +24,7 @@ private:
 
     // used to compute nuclear attraction and two-electron repulsion integral
     double  F_0(double t) const
-    {
-        return 0.5 * pow(M_PI / t, 0.5) * erf(pow(t, 0.5));
-    }
+    { return 0.5 * pow(M_PI / t, 0.5) * erf(pow(t, 0.5)); }
 
 public:
     Gauss(Vec R = Vec(), double alpha = 1.0,
@@ -78,6 +79,19 @@ private:
     int     nPhi;
     Phi     *phi;
 
+public:
+    Basis(void);
+    Basis(int);
+    ~Basis(void);
+
+    int     size() const { return nPhi; }
+
+    // calculate integral matrix
+    friend Mat  Mat_int_overlap(const Basis &basis);    // nPhi * nPhi
+    friend Mat  Mat_int_kinetic(const Basis &basis);    // nPhi * nPhi
+    friend Mat  Mat_int_nuclear(const Basis &basis,     // nPhi * nPhi
+                                const Molecule &mol);
+    friend Mat  Mat_int_repulsion(const Basis &basis);  // 1 * idx(idx(nPhi), idx(nPhi))
 };
 
 #endif // BASIS_H

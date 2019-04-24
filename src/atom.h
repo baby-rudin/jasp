@@ -20,10 +20,7 @@ public:
     Atom(int id, double mass, std::string symbol);
 
     std::string     print() const;
-    std::string     symb() const
-    {
-        return symbol;
-    }
+    std::string     symb() const { return symbol; }
 
 public:
     friend std::ostream &operator<<(std::ostream &os, const Atom &atom);

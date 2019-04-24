@@ -140,6 +140,8 @@ public:
 };
 
 
-long long   factor(int n);    // calculate the factor
+long long   factor(int n);                      // calculate the factor
+int         idx_sym(int i, int j);              // index of symmetric matrix element
+int         idx(int i, int j, int k, int l);    // index of repulsion matrix
 
 #endif // MATHFUN_H
