@@ -1,34 +1,28 @@
 #ifndef ATOM_H
 #define ATOM_H
 
+#include "type.hpp"
 #include <string>
-
-const int       Max_Atom_Id = 5;
-
-class Atom;
-extern Atom     Elem_Tab[Max_Atom_Id + 1];
 
 class Atom
 {
-private:
-    int             id;
-    double          mass;
-    std::string     symbol;
-
 public:
-    Atom(void);
-    Atom(int id, double mass, std::string symbol);
+    size_t          idx;
+    REAL            mass;
+    std::string     name;
+
+    Atom(size_t idx = 0, REAL mass = 0.0,
+         std::string name = std::string());
 
     std::string     print() const;
-    std::string     symb() const { return symbol; }
 
-public:
     friend std::ostream &operator<<(std::ostream &os, const Atom &atom);
 };
 
+const size_t    Max_Atom_Idx = 36;
+extern Atom     Elem_Tab[Max_Atom_Idx + 1];
 
-int             get_atom_id(std::string symbol);
-std::string     get_atom_symbol(int id);
-
+INTG            get_atom_idx(std::string name);
+std::string     get_atom_name(INTG idx);
 
 #endif // ATOM_H
